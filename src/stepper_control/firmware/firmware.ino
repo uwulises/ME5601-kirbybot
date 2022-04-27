@@ -2,17 +2,19 @@
 #include <FiniteStateMachine.h>
 // Definiciones para los pines de pulso y direccion
 const int dirPin_1 = 4;
-const int stepPin_1 = 5;
+const int stepPin_1 = 3;
 
 const int dirPin_2 = 6;
 const int stepPin_2 = 7;
-const int maxSpeed_stepper = 1000.0;
+const int maxSpeed_stepper = 10000;
+const int accel = 10000;
 AccelStepper stepper_1(AccelStepper::DRIVER, stepPin_1, dirPin_1);
 AccelStepper stepper_2(AccelStepper::DRIVER, stepPin_2, dirPin_2);
 
 //for serial event
 String input_str = "";
 bool str_full = false;
+bool stop_button = false;
 State START = State(motor_start);
 State STOP = State(motor_stop);
 State FW = State(go_forward);
@@ -28,8 +30,10 @@ void setup() {
   Serial.begin(9600);
   stepper_1.setMaxSpeed(maxSpeed_stepper);
   stepper_2.setMaxSpeed(maxSpeed_stepper);
+  stepper_1.setAcceleration(accel);
   input_str.reserve(200);
   pinMode(LED_BUILTIN, OUTPUT);
+  attachInterrupt(digitalPinToInterrupt(20), stopp, CHANGE);
 }
 
 void motor_start()
@@ -53,8 +57,17 @@ void motor_stop()
 
 void go_forward()
 {
+  stepper_1.setSpeed(maxSpeed_stepper);
+  stepper_2.setSpeed(maxSpeed_stepper);
+  while  (!stop_button) {
   
+   stepper_1.move(100);
+   stepper_1.run();
+    //Serial.println("RUNNING");
+    //delay(10);
+  }
 }
+
 void go_backward()
 {
 }
@@ -71,7 +84,9 @@ uint8_t read_sensor()
 {
 }
 
-
+void stopp(){
+  stop_button=!stop_button;
+}
 
 void serialEvent() {
   while (Serial.available()) {
@@ -95,7 +110,8 @@ void loop() {
     if (input_str.equals("START\n")) {
       if (Motor.isInState(STOP)) {
         Serial.println("Start!");
-        Motor.transitionTo(START);
+        Motor.transitionTo(FW);
+
       }
     }
     // clear the string:
@@ -103,6 +119,10 @@ void loop() {
     str_full = false;
     Motor.update();
   }
+  else if(input_str.equals("STOP\n")){
+      
+        Motor.transitionTo(STOP);
+        }
 
   else {
     ;

@@ -47,6 +47,10 @@ class SerialControl:
         status = "Not implemented"
         print(f"Sensor status: {status}")
         self.serial.write('HC1\n'.encode())
+
+    def read_from_arduino(self):
+        msg = arduino.readline()
+        return msg
         
 
     def run_effector(self):

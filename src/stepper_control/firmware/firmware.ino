@@ -42,7 +42,6 @@ void setup() {
   //   }
   //  }
 
-  //Serial.begin(9600);
   servokirby.attach(pinservo);
   pinMode(pinrodillo, OUTPUT);
 
@@ -73,8 +72,19 @@ void FW() {
 
 }
 
+void TR() {
 
+  stepper_1.step(-10);
+  stepper_2.step(10);
 
+}
+
+void TL() {
+
+  stepper_1.step(10);
+  stepper_2.step(-10);
+
+}
 
 void levanta_servo()  // funcion que levanta el servo
 { servokirby.write(180);
@@ -167,9 +177,23 @@ void loop() {
 
     }
 
-        if (inputString == "BW\n") {
+    if (inputString == "BW\n") {
       Serial.println("BACKWARD");
       BW();
+
+
+    }
+    if (inputString == "TR\n") {
+      Serial.println("TURNING RIGHT");
+      TR();
+
+
+    }
+
+    if (inputString == "TL\n") {
+      Serial.println("TURNING LEFT");
+      TL();
+
 
     }
     if (inputString == "HC1\n") {
@@ -178,6 +202,8 @@ void loop() {
       delay(10);
 
     }
+
+
 
     else {
       inputString = "";

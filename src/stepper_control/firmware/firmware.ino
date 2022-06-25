@@ -86,12 +86,12 @@ void TL() {
 
 }
 
-void levanta_servo()  // funcion que levanta el servo
+void rise_brush()  // funcion que levanta el servo
 { servokirby.write(180);
   delay(30);
 }
 
-void baja_servo()  // funcion que baja el servo
+void place_brush()  // funcion que baja el servo
 { servokirby.write(0);
   delay(30);
 }
@@ -157,41 +157,47 @@ void loop() {
   if (stringComplete) {
     Serial.println(inputString);
 
-    if (inputString == "run_brush\n") {
+    if (inputString == "run_b\n") {
       Serial.println("runningbrush");
       prende_rodillo();
       delay(10);
-      stringComplete = false;
 
     }
-    if (inputString == "stop_brush\n") {
+    if (inputString == "stop_b\n") {
       Serial.println("stoppingbrush");
       apaga_rodillo();
       delay(10);
-      stringComplete = false;
-
+      
+    }
+    if (inputString == "RB\n") {
+      Serial.println("rising brush");
+      rise_brush();
+      delay(10);
+      
+    }
+    if (inputString == "PB\n") {
+      Serial.println("placing brush");
+      place_brush();
+      delay(10);
+      
     }
     if (inputString == "FW\n") {
-      Serial.println("FORWARD");
       FW();
 
     }
 
     if (inputString == "BW\n") {
-      Serial.println("BACKWARD");
       BW();
 
 
     }
     if (inputString == "TR\n") {
-      Serial.println("TURNING RIGHT");
       TR();
 
 
     }
 
     if (inputString == "TL\n") {
-      Serial.println("TURNING LEFT");
       TL();
 
 

@@ -2,19 +2,19 @@ from serial_control import SerialControl
 import time
 from pynput.keyboard import Key, Listener
 
-robot_serial = SerialControl(port="/dev/cu.usbserial-14140")
-robot_serial.open_serial()
+robot = SerialControl(port="/dev/cu.usbserial-14140")
+robot.open_serial()
 
 
 def on_press(key):
     if key == Key.up:
-        robot_serial.forward()
+        robot.forward()
     if key == Key.down:
-        robot_serial.backward()
+        robot.backward()
     if key == Key.left:
-        robot_serial.turn_left()
+        robot.turn_left()
     if key == Key.right:
-        robot_serial.turn_right()
+        robot.turn_right()
 
 
 def on_release(key):

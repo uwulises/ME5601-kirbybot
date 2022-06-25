@@ -36,6 +36,18 @@ class SerialControl:
     def turn_left(self):
         self.serial.write('TL\n'.encode())
 
+    def rise_brush(self):
+        self.serial.write('RB\n'.encode())
+
+    def place_brush(self):
+        self.serial.write('PB\n'.encode())
+
+    def run_brush(self):
+        self.serial.write('run_b\n'.encode())
+
+    def stop_brush(self):
+        self.serial.write('stop_b\n'.encode())
+
     def read_status(self):
         ser_status = self.serial.isOpen()
         print(f"Serial Open: {ser_status}")

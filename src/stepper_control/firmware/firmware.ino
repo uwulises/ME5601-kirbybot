@@ -1,21 +1,21 @@
+#include <HCSR04.h>
 #include <Servo.h>
 #include <Stepper.h>
 #include "MPU9250.h"
-
 MPU9250 mpu;
 // Definiciones para los pines de pulso y direccion
 #define pinservo 3
 #define pinrodillo 45
 Servo servokirby;   // nombre del servo es servokirby
-const int dirPin_1 = 4;
-const int stepPin_1 = 3;
+const int dirPin_1 = 16;
+const int stepPin_1 = 17;
 
-const int dirPin_2 = 15;
-const int stepPin_2 = 14;
+const int dirPin_2 = 14;
+const int stepPin_2 = 15;
 
 
-const int maxSpeed_stepper = 10000;
-const int accel = 10000;
+const int maxSpeed_stepper = 50;
+
 
 #define STEPS 400
 
@@ -23,39 +23,41 @@ Stepper stepper_1(STEPS, dirPin_1, stepPin_1 );
 Stepper stepper_2(STEPS, dirPin_2, stepPin_2 );
 
 
-//for serial event
-String input_str = "";
-bool str_full = false;
+
+HCSR04 hc1(4, 5); //initialisation class HCSR04 (trig pin , echo pin)
+HCSR04 hc2(6, 7); //initialisation class HCSR04 (trig pin , echo pin)
+
+String inputString = "";
+bool stringComplete = false;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
   Wire.begin();
   delay(2000);
 
-  if (!mpu.setup(0x68)) {  // change to your own address
-    while (1) {
-      Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-      delay(5000);
-    }
-  }
+  // if (!mpu.setup(0x68)) {  // change to your own address
+  //   while (1) {
+  //     Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
+  //   delay(5000);
+  //   }
+  //  }
 
   //Serial.begin(9600);
   servokirby.attach(pinservo);
   pinMode(pinrodillo, OUTPUT);
-  input_str.reserve(200);
+
+  inputString.reserve(200);
   pinMode(LED_BUILTIN, OUTPUT);
   stepper_1.setSpeed(maxSpeed_stepper);
   stepper_2.setSpeed(maxSpeed_stepper);
-}
 
-
-
-void FW() {
-
-  stepper_1.step(10);
-  stepper_2.step(10);
+  Serial.println("----");
+  Serial.println("READY");
+  Serial.println("----");
 
 }
+
+
 
 void BW() {
 
@@ -64,13 +66,13 @@ void BW() {
 
 }
 
-void FW_to_pos(int distance) {
+void FW() {
 
-  int pasos = distance * STEPS;
-  stepper_1.step(pasos);
-  stepper_2.step(pasos);
-  delay(10);
+  stepper_1.step(10);
+  stepper_2.step(10);
+
 }
+
 
 
 
@@ -86,27 +88,35 @@ void baja_servo()  // funcion que baja el servo
 
 void prende_rodillo() {  // funcion que prende el rodillo
   digitalWrite(pinrodillo, HIGH);
+  delay(20);
 }
 
 void apaga_rodillo() {  // funcion que apaga el rodillo
   digitalWrite(pinrodillo, LOW);
+  delay(20);
 }
 
 
 void read_ultrasonic_1() {
-
+  Serial.println( hc1.dist() ); //return current distance (cm) in serial
+  delay(60);
 
 }
 
 
 void read_ultrasonic_2() {
 
-
+  Serial.println( hc2.dist() ); //return current distance (cm) in serial
+  delay(60);
 }
 
 void read_IMU() {
 
 }
+
+
+
+
 
 
 void print_roll_pitch_yaw() {
@@ -123,18 +133,64 @@ void serialEvent() {
     // get the new byte:
     char inChar = (char)Serial.read();
     // add it to the inputString:
-    input_str += inChar;
+    inputString += inChar;
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
     if (inChar == '\n') {
-      str_full = true;
+      stringComplete = true;
     }
   }
 }
 
 void loop() {
 
-  if (str_full) {
+  if (stringComplete) {
+    Serial.println(inputString);
 
+    if (inputString == "run_brush\n") {
+      Serial.println("runningbrush");
+      prende_rodillo();
+      delay(10);
+      stringComplete = false;
+
+    }
+    if (inputString == "stop_brush\n") {
+      Serial.println("stoppingbrush");
+      apaga_rodillo();
+      delay(10);
+      stringComplete = false;
+
+    }
+    if (inputString == "FW\n") {
+      Serial.println("FORWARD");
+      FW();
+
+    }
+
+        if (inputString == "BW\n") {
+      Serial.println("BACKWARD");
+      BW();
+
+    }
+    if (inputString == "HC1\n") {
+      Serial.println("HC1");
+      read_ultrasonic_1();
+      delay(10);
+
+    }
+
+    else {
+      inputString = "";
+    }
+
+
+    // clear the string:
+    inputString = "";
+    stringComplete = false;
   }
+
+
+
+
+
 }

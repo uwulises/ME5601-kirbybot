@@ -14,7 +14,7 @@ const int dirPin_2 = 14;
 const int stepPin_2 = 15;
 
 
-const int maxSpeed_stepper = 50;
+const int maxSpeed_stepper = 800;
 
 
 #define STEPS 400
@@ -60,29 +60,29 @@ void setup() {
 
 void BW() {
 
-  stepper_1.step(-10);
-  stepper_2.step(-10);
+  stepper_1.step(-4);
+  stepper_2.step(-4);
 
 }
 
 void FW() {
 
-  stepper_1.step(10);
-  stepper_2.step(10);
+  stepper_1.step(4);
+  stepper_2.step(4);
 
 }
 
 void TR() {
 
-  stepper_1.step(-10);
-  stepper_2.step(10);
+  stepper_1.step(-4);
+  stepper_2.step(4);
 
 }
 
 void TL() {
 
-  stepper_1.step(10);
-  stepper_2.step(-10);
+  stepper_1.step(4);
+  stepper_2.step(-4);
 
 }
 

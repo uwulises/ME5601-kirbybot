@@ -49,8 +49,9 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   stepper_1.setSpeed(maxSpeed_stepper);
   stepper_2.setSpeed(maxSpeed_stepper);
-  rise_brush(); 
-
+  rise_brush();
+  apaga_rodillo()
+  delay(200); 
   Serial.println("----");
   Serial.println("READY");
   Serial.println("----");
@@ -210,6 +211,9 @@ void loop() {
 
     }
 
+    if (inputString == "r_imu\n") {
+      read_IMU();
+    }
 
 
     else {

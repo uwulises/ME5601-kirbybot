@@ -49,6 +49,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   stepper_1.setSpeed(maxSpeed_stepper);
   stepper_2.setSpeed(maxSpeed_stepper);
+  rise_brush(); 
 
   Serial.println("----");
   Serial.println("READY");
@@ -155,7 +156,7 @@ void serialEvent() {
 void loop() {
 
   if (stringComplete) {
-    Serial.println(inputString);
+    //Serial.println(inputString);
 
     if (inputString == "run_b\n") {
       Serial.println("runningbrush");

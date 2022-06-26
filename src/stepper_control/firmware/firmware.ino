@@ -50,7 +50,7 @@ void setup() {
   stepper_1.setSpeed(maxSpeed_stepper);
   stepper_2.setSpeed(maxSpeed_stepper);
   rise_brush();
-  apaga_rodillo()
+  apaga_rodillo();
   delay(200); 
   Serial.println("----");
   Serial.println("READY");

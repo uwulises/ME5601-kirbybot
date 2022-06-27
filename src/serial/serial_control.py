@@ -1,3 +1,4 @@
+from asyncore import read
 import serial
 from serial import Serial
 import time
@@ -48,23 +49,15 @@ class SerialControl:
     def stop_brush(self):
         self.serial.write('stop_b\n'.encode())
 
-    def read_status(self):
-        ser_status = self.serial.isOpen()
-        print(f"Serial Open: {ser_status}")
-        if ser_status:
-            status = "Working Clean"
-            print(f"status: {status}")
-
-    def read_sensors(self):
-        status = "Not implemented"
-        print(f"Sensor status: {status}")
+    def call_ultrasonic_1(self):
         self.serial.write('HC1\n'.encode())
+        self.read_from_arduino()
+    
+    def call_ultrasonic_2(self):
+        self.serial.write('HC2\n'.encode())
+        self.read_from_arduino()
 
     def read_from_arduino(self):
-        msg = arduino.readline()
+        msg = self.serial.readline().decode("utf-8").strip('\n').strip('\r')
+        print("MESSAGE: '{}'".format(msg))
         return msg
-        
-
-    def run_effector(self):
-        status = "Not implemented"
-        print(f"Effector status: {status}")

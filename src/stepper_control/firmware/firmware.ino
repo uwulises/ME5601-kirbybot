@@ -6,31 +6,28 @@ MPU9250 mpu;
 // Definiciones para los pines de pulso y direccion
 #define pinservo 3
 #define pinrodillo 45
-Servo servokirby;   // nombre del servo es servokirby
+Servo servokirby; // nombre del servo es servokirby
 const int dirPin_1 = 16;
 const int stepPin_1 = 17;
 
 const int dirPin_2 = 14;
 const int stepPin_2 = 15;
 
-
 const int maxSpeed_stepper = 800;
-
 
 #define STEPS 400
 
-Stepper stepper_1(STEPS, dirPin_1, stepPin_1 );
-Stepper stepper_2(STEPS, dirPin_2, stepPin_2 );
+Stepper stepper_1(STEPS, dirPin_1, stepPin_1);
+Stepper stepper_2(STEPS, dirPin_2, stepPin_2);
 
-
-
-HCSR04 hc1(4, 5); //initialisation class HCSR04 (trig pin , echo pin)
-HCSR04 hc2(6, 7); //initialisation class HCSR04 (trig pin , echo pin)
+HCSR04 hc1(4, 5); // initialisation class HCSR04 (trig pin , echo pin)
+HCSR04 hc2(6, 7); // initialisation class HCSR04 (trig pin , echo pin)
 
 String inputString = "";
 bool stringComplete = false;
 
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   Wire.begin();
   delay(2000);
@@ -51,87 +48,84 @@ void setup() {
   stepper_2.setSpeed(maxSpeed_stepper);
   rise_brush();
   apaga_rodillo();
-  delay(200); 
+  delay(200);
   Serial.println("----");
   Serial.println("READY");
   Serial.println("----");
-
+  delay(200);
 }
 
-
-
-void BW() {
+void BW()
+{
 
   stepper_1.step(-4);
   stepper_2.step(-4);
-
 }
 
-void FW() {
+void FW()
+{
 
   stepper_1.step(4);
   stepper_2.step(4);
-
 }
 
-void TR() {
+void TR()
+{
 
   stepper_1.step(-4);
   stepper_2.step(4);
-
 }
 
-void TL() {
+void TL()
+{
 
   stepper_1.step(4);
   stepper_2.step(-4);
-
 }
 
-void rise_brush()  // funcion que levanta el servo
-{ servokirby.write(180);
+void rise_brush() // funcion que levanta el servo
+{
+  servokirby.write(180);
   delay(30);
 }
 
-void place_brush()  // funcion que baja el servo
-{ servokirby.write(0);
+void place_brush() // funcion que baja el servo
+{
+  servokirby.write(0);
   delay(30);
 }
 
-void prende_rodillo() {  // funcion que prende el rodillo
+void prende_rodillo()
+{ // funcion que prende el rodillo
   digitalWrite(pinrodillo, HIGH);
   delay(20);
 }
 
-void apaga_rodillo() {  // funcion que apaga el rodillo
+void apaga_rodillo()
+{ // funcion que apaga el rodillo
   digitalWrite(pinrodillo, LOW);
   delay(20);
 }
 
-
-void read_ultrasonic_1() {
-  Serial.println( hc1.dist() ); //return current distance (cm) in serial
-  delay(60);
-
-}
-
-
-void read_ultrasonic_2() {
-
-  Serial.println( hc2.dist() ); //return current distance (cm) in serial
+void read_ultrasonic_1()
+{
+  Serial.println(hc1.dist()); // return current distance (cm) in serial
   delay(60);
 }
 
-void read_IMU() {
+void read_ultrasonic_2()
+{
 
+  Serial.println(hc2.dist()); // return current distance (cm) in serial
+  delay(60);
 }
 
+void read_IMU()
+{
+}
 
-
-
-
-
-void print_roll_pitch_yaw() {
+void print_roll_pitch_yaw()
+{
   Serial.print("Yaw, Pitch, Roll: ");
   Serial.print(mpu.getYaw(), 2);
   Serial.print(", ");
@@ -140,94 +134,98 @@ void print_roll_pitch_yaw() {
   Serial.println(mpu.getRoll(), 2);
 }
 
-void serialEvent() {
-  while (Serial.available()) {
+void serialEvent()
+{
+  while (Serial.available())
+  {
     // get the new byte:
     char inChar = (char)Serial.read();
     // add it to the inputString:
     inputString += inChar;
     // if the incoming character is a newline, set a flag so the main loop can
     // do something about it:
-    if (inChar == '\n') {
+    if (inChar == '\n')
+    {
       stringComplete = true;
     }
   }
 }
 
-void loop() {
+void loop()
+{
 
-  if (stringComplete) {
-    //Serial.println(inputString);
-
-    if (inputString == "run_b\n") {
+  if (stringComplete)
+  {
+    // Serial.println(inputString);
+    if (inputString == "run_b\n")
+    {
       Serial.println("runningbrush");
       prende_rodillo();
       delay(10);
-
     }
-    if (inputString == "stop_b\n") {
+
+    if (inputString == "stop_b\n")
+    {
       Serial.println("stoppingbrush");
       apaga_rodillo();
       delay(10);
-      
     }
-    if (inputString == "RB\n") {
+
+    if (inputString == "RB\n")
+    {
       Serial.println("rising brush");
       rise_brush();
       delay(10);
-      
     }
-    if (inputString == "PB\n") {
+    if (inputString == "PB\n")
+    {
       Serial.println("placing brush");
       place_brush();
       delay(10);
-      
     }
-    if (inputString == "FW\n") {
+    if (inputString == "FW\n")
+    {
       FW();
-
     }
 
-    if (inputString == "BW\n") {
+    if (inputString == "BW\n")
+    {
       BW();
-
-
     }
-    if (inputString == "TR\n") {
+    if (inputString == "TR\n")
+    {
       TR();
-
-
     }
 
-    if (inputString == "TL\n") {
+    if (inputString == "TL\n")
+    {
       TL();
-
-
     }
-    if (inputString == "HC1\n") {
+    if (inputString == "HC1\n")
+    {
       Serial.println("HC1");
       read_ultrasonic_1();
       delay(10);
-
+    }
+    if (inputString == "HC2\n")
+    {
+      Serial.println("HC2");
+      read_ultrasonic_2();
+      delay(10);
     }
 
-    if (inputString == "r_imu\n") {
+    if (inputString == "r_imu\n")
+    {
       read_IMU();
     }
 
-
-    else {
+    else
+    {
       inputString = "";
     }
-
 
     // clear the string:
     inputString = "";
     stringComplete = false;
   }
-
-
-
-
-
 }

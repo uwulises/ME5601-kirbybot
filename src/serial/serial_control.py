@@ -59,5 +59,5 @@ class SerialControl:
 
     def read_from_arduino(self):
         msg = self.serial.readline().decode("utf-8").strip('\n').strip('\r')
-        print("MESSAGE: '{}'".format(msg))
+        #print("MESSAGE: '{}'".format(msg))
         return msg

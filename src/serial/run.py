@@ -2,7 +2,7 @@ from serial_control import SerialControl
 import time
 from pynput.keyboard import Key, Listener, KeyCode
 
-robot = SerialControl(port="/dev/cu.usbserial-14140")
+robot = SerialControl(port="/dev/tty.usbmodem141301")
 robot.open_serial()
 
 
@@ -16,23 +16,30 @@ def on_press(key):
     if key == Key.right:
         robot.turn_right()
     if key == KeyCode.from_char('q'):
-        #turn on the brush
+        # turn on the brush
         robot.run_brush()
     if key == KeyCode.from_char('e'):
-        #turn on the brushe
+        # turn on the brushe
         robot.stop_brush()
     if key == KeyCode.from_char('r'):
-        #down the brush
+        # down the brush
         robot.place_brush()
     if key == KeyCode.from_char('f'):
-        #rise the brush
+        # rise the brush
         robot.rise_brush()
+    if key == KeyCode.from_char('c'):
+        # rise the brush
+        robot.call_ultrasonic_1()
+    if key == KeyCode.from_char('x'):
+        # rise the brush
+        robot.call_ultrasonic_2()
+
 
 def on_release(key):
-    print('{0} release'.format(
-        key))
+    #print('{0} release'.format(key))
     if key == Key.esc:
         # Stop listener
+        print('{0} release'.format(key))
         return False
 
 

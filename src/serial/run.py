@@ -2,7 +2,7 @@ from serial_control import SerialControl
 import time
 from pynput.keyboard import Key, Listener, KeyCode
 
-robot = SerialControl(port="/dev/tty.usbmodem141301")
+robot = SerialControl(port="/dev/tty.usbserial-14130")
 robot.open_serial()
 
 

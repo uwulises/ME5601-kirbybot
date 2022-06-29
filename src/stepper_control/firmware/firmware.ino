@@ -13,7 +13,8 @@ const int stepPin_1 = 17;
 const int dirPin_2 = 14;
 const int stepPin_2 = 15;
 
-const int maxSpeed_stepper = 800;
+const int maxSpeed_stepper = 1000;
+const int stepstorun = 4;
 
 #define STEPS 400
 
@@ -57,30 +58,39 @@ void setup()
 
 void BW()
 {
-
-  stepper_1.step(-4);
-  stepper_2.step(-4);
+  for(int i=0; i<stepstorun+1; i++)
+{
+  stepper_1.step(-1);
+  stepper_2.step(-1);
 }
-
+}
 void FW()
 {
 
-  stepper_1.step(4);
-  stepper_2.step(4);
+  for(int i=0; i<stepstorun+1; i++)
+{
+  stepper_1.step(1);
+  stepper_2.step(1);
+}
 }
 
 void TR()
 {
 
-  stepper_1.step(-4);
-  stepper_2.step(4);
+  for(int i=0; i<stepstorun+1; i++)
+{
+  stepper_1.step(1);
+  stepper_2.step(-1);
+}
 }
 
 void TL()
 {
-
-  stepper_1.step(4);
-  stepper_2.step(-4);
+  for(int i=0; i<stepstorun+1; i++)
+{
+  stepper_1.step(-1);
+  stepper_2.step(1);
+}
 }
 
 void rise_brush() // funcion que levanta el servo

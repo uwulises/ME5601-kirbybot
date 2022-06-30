@@ -2,6 +2,7 @@
 #include <Servo.h>
 #include <Stepper.h>
 #include "MPU9250.h"
+#include <SoftwareSerial.h>  
 MPU9250 mpu;
 // Definiciones para los pines de pulso y direccion
 #define pinservo 3
@@ -13,8 +14,8 @@ const int stepPin_1 = 17;
 const int dirPin_2 = 14;
 const int stepPin_2 = 15;
 
-const int maxSpeed_stepper = 1000;
-const int stepstorun = 4;
+const int maxSpeed_stepper = 300;
+const int stepstorun = 200;
 
 #define STEPS 400
 
@@ -29,6 +30,7 @@ bool stringComplete = false;
 
 void setup()
 {
+  //Serial.begin(9600);
   Serial.begin(9600);
   Wire.begin();
   delay(2000);
@@ -95,13 +97,13 @@ void TL()
 
 void rise_brush() // funcion que levanta el servo
 {
-  servokirby.write(180);
+  servokirby.write(50);
   delay(30);
 }
 
 void place_brush() // funcion que baja el servo
 {
-  servokirby.write(0);
+  servokirby.write(150);
   delay(30);
 }
 
@@ -166,7 +168,7 @@ void loop()
 
   if (stringComplete)
   {
-    // Serial.println(inputString);
+    Serial.println(inputString);
     if (inputString == "run_b\n")
     {
       Serial.println("runningbrush");

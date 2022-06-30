@@ -51,7 +51,7 @@ class SerialControl:
 
     def call_ultrasonic_1(self):
         self.serial.write('HC1\n'.encode())
-        self.read_from_arduino()
+        print(self.read_from_arduino())
     
     def call_ultrasonic_2(self):
         self.serial.write('HC2\n'.encode())

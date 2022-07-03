@@ -1,9 +1,26 @@
 #include <HCSR04.h>
 #include <Servo.h>
 #include <Stepper.h>
-#include "MPU9250.h"
+#include "I2Cdev.h"
+#include "MPU6050.h"
+#include "Wire.h"
 #include <SoftwareSerial.h>  
-MPU9250 mpu;
+
+// La dirección del MPU6050 puede ser 0x68 o 0x69, dependiendo 
+// del estado de AD0. Si no se especifica, 0x68 estará implicito
+MPU6050 sensor;
+
+// Valores RAW (sin procesar) del acelerometro y giroscopio en los ejes x,y,z
+int ax, ay, az;
+int gx, gy, gz;
+
+long tiempo_prev;
+float dt;
+float ang_x, ang_y;
+float ang_x_prev, ang_y_prev;
+
+///
+
 // Definiciones para los pines de pulso y direccion
 #define pinservo 3
 #define pinrodillo 45
@@ -33,14 +50,8 @@ void setup()
   //Serial.begin(9600);
   Serial.begin(9600);
   Wire.begin();
+  sensor.initialize();    //Iniciando el sensor
   delay(2000);
-
-  // if (!mpu.setup(0x68)) {  // change to your own address
-  //   while (1) {
-  //     Serial.println("MPU connection failed. Please check your connection with `connection_check` example.");
-  //   delay(5000);
-  //   }
-  //  }
 
   servokirby.attach(pinservo);
   pinMode(pinrodillo, OUTPUT);
@@ -132,18 +143,34 @@ void read_ultrasonic_2()
   delay(60);
 }
 
-void read_IMU()
-{
-}
 
-void print_roll_pitch_yaw()
-{
-  Serial.print("Yaw, Pitch, Roll: ");
-  Serial.print(mpu.getYaw(), 2);
-  Serial.print(", ");
-  Serial.print(mpu.getPitch(), 2);
-  Serial.print(", ");
-  Serial.println(mpu.getRoll(), 2);
+void read_MPU6050(){
+   // Leer las aceleraciones y velocidades angulares
+  sensor.getAcceleration(&ax, &ay, &az);
+  sensor.getRotation(&gx, &gy, &gz);
+  
+  dt = (millis()-tiempo_prev)/1000.0;
+  tiempo_prev=millis();
+  
+  //Calcular los ángulos con acelerometro
+  float accel_ang_x=atan(ay/sqrt(pow(ax,2) + pow(az,2)))*(180.0/3.14);
+  float accel_ang_y=atan(-ax/sqrt(pow(ay,2) + pow(az,2)))*(180.0/3.14);
+  
+  //Calcular angulo de rotación con giroscopio y filtro complemento  
+  ang_x = 0.98*(ang_x_prev+(gx/131)*dt) + 0.02*accel_ang_x;
+  ang_y = 0.98*(ang_y_prev+(gy/131)*dt) + 0.02*accel_ang_y;
+  
+  ang_x_prev=ang_x;
+  ang_y_prev=ang_y;
+
+  //Mostrar los angulos separadas por un [tab]
+
+  Serial.print("Rotacion en X:  ");
+  Serial.print(ang_x); 
+  Serial.print("tRotacion en Y: ");
+  Serial.println(ang_y);
+
+  delay(10);
 }
 
 void serialEvent()
@@ -171,27 +198,27 @@ void loop()
     Serial.println(inputString);
     if (inputString == "run_b\n")
     {
-      Serial.println("runningbrush");
+      //Serial.println("runningbrush");
       prende_rodillo();
       delay(10);
     }
 
     if (inputString == "stop_b\n")
     {
-      Serial.println("stoppingbrush");
+      //Serial.println("stoppingbrush");
       apaga_rodillo();
       delay(10);
     }
 
     if (inputString == "RB\n")
     {
-      Serial.println("rising brush");
+     // Serial.println("rising brush");
       rise_brush();
       delay(10);
     }
     if (inputString == "PB\n")
     {
-      Serial.println("placing brush");
+      //Serial.println("placing brush");
       place_brush();
       delay(10);
     }
@@ -215,20 +242,20 @@ void loop()
     }
     if (inputString == "HC1\n")
     {
-      Serial.println("HC1");
+      //Serial.println("HC1");
       read_ultrasonic_1();
       delay(10);
     }
     if (inputString == "HC2\n")
     {
-      Serial.println("HC2");
+      //Serial.println("HC2");
       read_ultrasonic_2();
       delay(10);
     }
 
     if (inputString == "r_imu\n")
     {
-      read_IMU();
+      read_MPU6050();
     }
 
     else

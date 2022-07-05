@@ -115,7 +115,7 @@ void rise_brush() // funcion que levanta el servo
 
 void place_brush() // funcion que baja el servo
 {
-  servokirby.write(180);
+  servokirby.write(160);
   delay(30);
 }
 

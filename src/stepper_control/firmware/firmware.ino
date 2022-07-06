@@ -10,8 +10,8 @@
 #define pinservo 3
 #define pinrodillo 45
 
-const int dirPin_1 = 16;
-const int stepPin_1 = 17;
+const int dirPin_1 = 18;
+const int stepPin_1 = 19;
 
 const int dirPin_2 = 14;
 const int stepPin_2 = 15;
@@ -51,11 +51,8 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
   sensor.initialize(); // Iniciando el sensor
-  delay(2000);
-
   servokirby.attach(pinservo);
   pinMode(pinrodillo, OUTPUT);
-
   inputString.reserve(200);
   pinMode(LED_BUILTIN, OUTPUT);
   stepper_1.setSpeed(maxSpeed_stepper);
@@ -66,8 +63,17 @@ void setup()
   Serial.println("----");
   Serial.println("READY");
   Serial.println("----");
-  delay(200);
+  delay(2000);
+
+
 }
+
+void SAFETYWASHITO(){
+ 
+ if (hc1.dist()<30){
+  Serial.println("Y");
+ }}
+
 
 void BW()
 {
@@ -131,18 +137,6 @@ void apaga_rodillo()
   delay(20);
 }
 
-void read_ultrasonic_1()
-{
-  Serial.println(hc1.dist()); // return current distance (cm) in serial
-  delay(60);
-}
-
-void read_ultrasonic_2()
-{
-
-  Serial.println(hc2.dist()); // return current distance (cm) in serial
-  delay(60);
-}
 
 void read_MPU6050()
 {
@@ -240,18 +234,8 @@ void loop()
     {
       TL();
     }
-    if (inputString == "HC1\n")
-    {
-      // Serial.println("HC1");
-      read_ultrasonic_1();
-      delay(10);
-    }
-    if (inputString == "HC2\n")
-    {
-      // Serial.println("HC2");
-      read_ultrasonic_2();
-      delay(10);
-    }
+    
+
 
     if (inputString == "r_imu\n")
     {
@@ -267,5 +251,6 @@ void loop()
     inputString = "";
     stringComplete = false;
     // Serial.println(17);
+
   }
 }

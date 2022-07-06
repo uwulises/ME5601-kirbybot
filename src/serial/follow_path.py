@@ -2,12 +2,14 @@ from serial_control import SerialControl
 import time
 
 
-
-robot = SerialControl(port="/dev/cu.usbserial-14140")
+robot = SerialControl(port="/dev/tty.usbmodem142401")
+#robot = SerialControl(port="/dev/tty.HC06")
 robot.open_serial()
 
-def call_mpu():
-    IMU_msg = robot.read_imu()
 
 
+
+while True:
+    robot.forward()
+    time.sleep(0.1)
 
